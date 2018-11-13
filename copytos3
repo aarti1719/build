@@ -1,0 +1,88 @@
+#!bin/bash
+set +e
+ # Sync the code
+ echo "copying files"
+ echo ${ENVNAME}
+
+ERROR=$(aws s3 rm s3://${S3_BUCKET_BLUE} --recursive 2>&1 >/dev/null)
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_BLUE} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_BLUE} ";
+    fi; 
+ 
+ERROR=$(aws s3 cp dist/PRTRetireReady s3://${S3_BUCKET_BLUE} --recursive --acl bucket-owner-full-control 2>&1 >/dev/null) 
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_BLUE} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_BLUE} ";
+    fi; 
+
+
+ERROR=$(aws s3 cp public s3://${S3_BUCKET_BLUE}/public --recursive --acl bucket-owner-full-control 2>&1 >/dev/null) 
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_BLUE} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_BLUE} ";
+    fi; 
+
+
+ERROR=$(aws s3 mv s3://${S3_BUCKET_BLUE}/public/template.index.${ENVNAME}.html s3://${S3_BUCKET_BLUE}/public/index.html --acl bucket-owner-full-control --cache-control "no-cache, no-store, must-revalidate" --expires "0" --metadata-directive REPLACE) 
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_BLUE} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_BLUE} ";
+    fi; 
+
+ERROR=$(aws s3 rm s3://${S3_BUCKET_BLUE}/public/ --recursive --exclude "*" --include "template*")
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_BLUE} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_BLUE} ";
+    fi; 
+
+ERROR=$(aws s3 rm s3://${S3_BUCKET_GREEN} --recursive 2>&1 >/dev/null)
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_GREEN} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_GREEN} ";
+    fi; 
+
+ERROR=$(aws s3 cp dist/PRTRetireReady s3://${S3_BUCKET_GREEN} --recursive --acl bucket-owner-full-control 2>&1 >/dev/null)
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_GREEN} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_GREEN} ";
+    fi;
+
+ERROR=$(aws s3 cp public s3://${S3_BUCKET_GREEN}/public --recursive --acl bucket-owner-full-control 2>&1 >/dev/null) 
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_GREEN} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_GREEN} ";
+    fi; 
+
+ERROR=$(aws s3 mv s3://${S3_BUCKET_GREEN}/public/template.index.${ENVNAME}.html  s3://${S3_BUCKET_GREEN}/public/index.html --acl bucket-owner-full-control --cache-control "no-cache, no-store, must-revalidate" --expires "0" --metadata-directive REPLACE) 
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_GREEN} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_GREEN} ";
+    fi; 
+ERROR=$(aws s3 rm s3://${S3_BUCKET_GREEN}/public/ --recursive --exclude "*" --include "template*")
+    if [ "$?" -gt "0" ]; then 
+        ((ERROR_COUNT++));
+        echo "[fail] ${S3_BUCKET_GREEN} : $ERROR";
+    else 
+        echo "[pass] ${S3_BUCKET_GREEN} ";
+    fi; 
+
+echo "$ERROR_COUNT Copy error(s)"; 
