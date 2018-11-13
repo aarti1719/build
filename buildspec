@@ -2,9 +2,10 @@ version: 0.2
 
 env:
   variables:
-    S3_BUCKET: "rde-app-artifactbucket-bhjbo0v6rptd"
     ENVNAME: "dev"
-
+  parameter-store:
+    S3_BUCKET: "rde-app-artifactbucket-bhjbo0v6rptd"
+    
 phases:
   install:
     commands:
@@ -19,7 +20,7 @@ phases:
 
   build:
     commands:
-       - aws s3 sync . s3://$(S3_BUCKET)
+       - aws s3 sync . s3://$S3_BUCKET
   
   post_build:
     commands:
