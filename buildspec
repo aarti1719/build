@@ -19,8 +19,8 @@ phases:
 
   build:
     commands:
-       - chmod 755 copytos3.sh
-       - bash copytos3.sh
+       - chmod 755 WSG-PRUCOOP-ANGULAR/copytos3.sh
+       - bash WSG-PRUCOOP-ANGULAR/copytos3.sh
   
   post_build:
     commands:
