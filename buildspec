@@ -1,0 +1,33 @@
+version: 0.2
+
+env:
+  variables:
+    S3_BUCKET: "rde-app-artifactbucket-bhjbo0v6rptd"
+    ENVNAME: "dev"
+
+phases:
+  install:
+    commands:
+     - npm install -g @angular/cli
+     
+  
+  pre_build: 
+    commands:
+      - echo Build started on `date`
+      - npm install 
+      - ng build 
+
+  build:
+    commands:
+       - chmod 755 copytos3.sh
+       - bash copytos3.sh
+  
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files: 
+    - 'dist/rde-app/**/*'
+  name: dev/RDE-APP--$(date +%Y-%m-%d) 
+  discard-paths: yes
