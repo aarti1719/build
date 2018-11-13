@@ -19,8 +19,7 @@ phases:
 
   build:
     commands:
-       - chmod 755 WSG-PRUCOOP-ANGULAR/copytos3.sh
-       - bash WSG-PRUCOOP-ANGULAR/copytos3.sh
+       - aws s3 sync . s3://$(S3_BUCKET)
   
   post_build:
     commands:
